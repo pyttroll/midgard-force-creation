@@ -87,7 +87,7 @@ export const UnitTraits: Record<string, UnitTrait> = {
   CounterCharge: UnitTrait.fromObject({
     name: 'Counter Charge',
     description:
-      'If charged to the front in open terrain, Unit may take a Command Test to counter charge. Unit is given a Charging or Winning marker but is not moved. Counter charging Unit may not use missiles; counter charging Unites do not gain Reputation [pg68]',
+      'If charged to the front in open terrain, Unit may take a Command Test to counter charge. Unit is given a Charging or Winning marker but is not moved. Counter charging Unit may not use missiles; counter charging units do not gain Reputation [pg68]',
   }),
   Disengage: UnitTrait.fromObject({
     name: 'Disengage',
