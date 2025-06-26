@@ -41,11 +41,27 @@ export default class Force {
   }
 
   toApi(): IForceApi {
+    let heroes
+    try {
+      heroes = this.heroes.map((hero) => hero.toApi())
+    } catch (e) {
+      console.error('Failed to convert heroes to API models')
+      throw e
+    }
+
+    let units
+    try {
+      units = this.units.map((unit) => unit.toApi())
+    } catch (e) {
+      console.error('Failed to convert units to API models')
+      throw e
+    }
+
     return {
       id: this.id,
       name: this.name,
-      heroes: this.heroes.map((hero) => hero.toApi()),
-      units: this.units.map((unit) => unit.toApi()),
+      heroes,
+      units,
       theme: this.theme,
     }
   }

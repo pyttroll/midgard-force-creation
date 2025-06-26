@@ -35,14 +35,43 @@ export function loadForces() {
 }
 
 export function saveForces({ forces, customHeroTraits, customUnitTraits }) {
-  localStorage.setItem(
-    'forces',
-    JSON.stringify({
-      forces: forces.map((force) => force.toApi()),
-      customHeroTraits: customHeroTraits.map((trait) => trait.toApi()),
-      customUnitTraits: customUnitTraits.map((trait) => trait.toApi()),
-    }),
-  )
+  let apiForces
+  try {
+    apiForces = forces.map((force) => force.toApi())
+  } catch (e) {
+    console.error('Failed to convert forces to API models')
+    throw e
+  }
+
+  let apiCustomHeroTraits
+  try {
+    apiCustomHeroTraits = customHeroTraits.map((trait) => trait.toApi())
+  } catch (e) {
+    console.error('Failed to convert custom hero traits to API models')
+    throw e
+  }
+
+  let apiCustomUnitTraits
+  try {
+    apiCustomUnitTraits = customUnitTraits.map((trait) => trait.toApi())
+  } catch (e) {
+    console.error('Failed to convert custom unit traits to API models')
+    throw e
+  }
+
+  let json
+  try {
+    json = JSON.stringify({
+      forces: apiForces,
+      customHeroTraits: apiCustomHeroTraits,
+      customUnitTraits: apiCustomUnitTraits,
+    })
+  } catch (e) {
+    console.error('Failed to serialize forces')
+    throw e
+  }
+
+  localStorage.setItem('forces', json)
 }
 
 const sampleForces = [
