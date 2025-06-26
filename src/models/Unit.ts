@@ -54,7 +54,9 @@ export default class Unit implements IForceItem {
       data.traits
         .map((trait) => traits.find((t) => t.name === trait) as UnitTrait)
         .filter((x) => x != null),
-      data.options.map((option) => profile.options?.find((o) => o.id === option) as IUnitOption),
+      data.options
+        .map((option) => profile.options?.find((o) => o.id === option) as IUnitOption)
+        .filter((x) => x != null),
     )
   }
 
