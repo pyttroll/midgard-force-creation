@@ -1,3 +1,4 @@
+import { IContingentAllocation } from './Contingent'
 import type { IForceItem } from './Force'
 import { IMissileType } from './Missiles'
 import type { IUnitOption } from './UnitProfile'
@@ -12,6 +13,7 @@ export interface IUnitApi {
   profile: string
   traits: Array<string>
   options: Array<number>
+  contingent: Array<IContingentAllocation> | null
 }
 
 export default class Unit implements IForceItem {
@@ -21,9 +23,15 @@ export default class Unit implements IForceItem {
     public profile: UnitProfile,
     public traits: Array<UnitTrait>,
     public options: Array<IUnitOption>,
+    public contingent: Array<IContingentAllocation> | null = null,
   ) {
     traits = traits.filter((trait) => profile.builtInTraits?.find((x) => x.name === trait.name))
+    options = options.filter((x) => x != null)
   }
+  get contingentFormatted(): string {
+    throw new Error('Method not implemented.')
+  }
+
   validate(): void {
     throw new Error('Method not implemented.')
   }
@@ -39,6 +47,7 @@ export default class Unit implements IForceItem {
       profile: this.profile.name,
       traits: this.traits.map((trait) => trait.name),
       options: this.options.map((option) => option.id),
+      contingent: this.contingent,
     }
   }
 
@@ -57,6 +66,7 @@ export default class Unit implements IForceItem {
       data.options
         .map((option) => profile.options?.find((o) => o.id === option) as IUnitOption)
         .filter((x) => x != null),
+      data.contingent,
     )
   }
 
@@ -150,7 +160,7 @@ export default class Unit implements IForceItem {
   }
 
   get optionsPoints(): number {
-    return this.options.reduce((acc, option) => acc + option.points, 0)
+    return this.options.filter((x) => x != null).reduce((acc, option) => acc + option.points, 0)
   }
 
   get validationErrors() {

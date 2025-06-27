@@ -1,6 +1,6 @@
 <template>
   <div class="force" ref="container">
-    <div class="well">
+    <force-block>
       <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
         {{ force.name }}
       </h1>
@@ -12,7 +12,7 @@
       <b>Reputation {{ force.reputation }}</b
       ><br />
       <b>Reputation Tokens {{ force.reputationTokens }}</b>
-    </div>
+    </force-block>
   </div>
 </template>
 
@@ -20,6 +20,7 @@
 import Force from '@/models/Force'
 import { applyTheme } from '@/models/Themes'
 import { onMounted, ref } from 'vue'
+import ForceBlock from './ForceBlock.vue'
 
 const props = defineProps({
   force: Force,

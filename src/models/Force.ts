@@ -12,6 +12,7 @@ interface IForceApi {
   heroes: Array<IHeroApi>
   units: Array<IUnitApi>
   theme?: string
+  useContingents: boolean
 }
 
 export interface IForceItem {
@@ -32,12 +33,14 @@ export default class Force {
     public heroes: Array<Hero> = [],
     public units: Array<Unit> = [],
     public theme: string = null,
+    public useContingents: boolean = false,
   ) {
     this.id = id || createGuid()
     this.name = name
     this.heroes = heroes
     this.units = units
     this.theme = theme
+    this.useContingents = useContingents
   }
 
   toApi(): IForceApi {
@@ -63,6 +66,7 @@ export default class Force {
       heroes,
       units,
       theme: this.theme,
+      useContingents: this.useContingents,
     }
   }
 
@@ -73,7 +77,12 @@ export default class Force {
       data.heroes.map((hero) => Hero.fromApi(hero)),
       data.units.map((unit) => Unit.fromApi(unit)),
       data.theme,
+      data.useContingents,
     )
+  }
+
+  get items() {
+    return [...this.heroes, ...this.units]
   }
 
   get themeColor(): ITheme {
@@ -103,6 +112,43 @@ export default class Force {
 
   get reputationTokens() {
     return Math.max(8, Math.ceil(this.reputation / 4))
+  }
+
+  get contingentNames() {
+    return Array.from(
+      new Set([
+        ...this.heroes.map((x) => x.contingent),
+        ...this.units
+          .map((x) => x.contingent.map((c) => c.value).flat())
+          .flat()
+          .filter((x) => x),
+      ]),
+    ).filter((c) => c)
+  }
+
+  get contingents() {
+    return this.contingentNames.map((c) => ({
+      name: c,
+      heroes: this.heroes.filter((x) => x.contingent === c),
+      units: this.units.filter((x) => x.contingent.some((x) => x.value === c)),
+    }))
+  }
+
+  get contingentPoints() {
+    // Each contingent must total at least 25% of the whole force.
+    return this.contingentNames
+      .filter((x) => x)
+      .map((c) => ({
+        name: c,
+        points:
+          this.heroes.filter((x) => x.contingent === c).reduce((mem, x) => mem + x.points, 0) +
+          this.units.reduce((mem, u) => {
+            const match = u.contingent.find((uc) => uc.value === c)
+            return mem + (match ? u.points * match.qty : 0)
+          }, 0),
+      }))
+      .map((c) => ({ ...c, ratio: `${Math.round((c.points / this.points) * 100)}%` }))
+      .sort((a, b) => a.name.localeCompare(b.name))
   }
 
   get validationErrors() {
@@ -151,6 +197,35 @@ export default class Force {
 
     errors.push(...this.heroes.flatMap((hero) => hero.validationErrors))
     errors.push(...this.units.flatMap((unit) => unit.validationErrors))
+
+    // Contingent rules
+    if (this.useContingents) {
+      // Each hero and unit must be assigned to a contingent.
+      if (this.heroes.some((x) => x.contingent == null)) {
+        errors.push('Every Unit and Hero in your Force must be allocated to a Contingent')
+      }
+
+      // Each contingent must have a hero.
+      if (!this.contingentNames.every((c) => this.heroes.some((x) => x.contingent === c))) {
+        errors.push('Each Contingent must be led by a Hero.')
+      }
+
+      // Each contingent must have a unit.
+      if (
+        !this.contingentNames.every((c) =>
+          this.units.some((x) => x.contingent.some((y) => y.value === c)),
+        )
+      ) {
+        errors.push('Each contingent must have at least one unit.')
+      }
+
+      // Each contingent must total at least 25% of the whole force.
+      if (!this.contingentPoints.map((x) => x.points).every((pts) => pts >= this.points / 4)) {
+        errors.push(
+          `Each Contingent must contain Units and Heroes totalling at least 25% of the Points value of the whole Force. (${this.contingentPoints.map((cp) => `${cp.name} = ${cp.points}pts`).join(', ')})`,
+        )
+      }
+    }
 
     return errors
   }

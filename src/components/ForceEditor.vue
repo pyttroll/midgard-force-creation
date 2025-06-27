@@ -5,7 +5,7 @@
       class="header-bg"
       :style="`opacity: ${headerBackgroundOpacity}%;`"
     ></div>
-    <div class="well">
+    <force-block :is-fixed="true">
       <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
         {{ force.name }}
       </h1>
@@ -18,6 +18,14 @@
           <b>Reputation Tokens {{ force.reputationTokens }}</b>
         </div>
         <div class="column-right">
+          <contingent-distribution
+            v-if="force.useContingents"
+            :force="force"
+          ></contingent-distribution>
+          <label class="checkbox"
+            ><input type="checkbox" v-model="force.useContingents" />
+            <span>Use contingents</span></label
+          >
           <ThemePicker :theme="force.theme" @changed="themeChanged"></ThemePicker>
           <div class="actions">
             <button @click="saveForce">Save</button>
@@ -25,7 +33,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </force-block>
     <div class="hero-block force-name-block">
       <div class="form-row">
         <div class="label">Force Name:</div>
@@ -37,16 +45,14 @@
       <Separator></Separator>
     </div>
     <h1>Heroes</h1>
-    <!-- <div class="separator">
-      <Separator></Separator>
-    </div> -->
     <div v-for="hero in force?.heroes" :key="hero.name">
       <div class="hero-block">
-        <HeroView :hero="hero" />
+        <HeroView :hero="hero" :is-editing="true" />
         <HeroEditor
           :hero="hero"
+          :force="force"
           @changed="(updatedHero) => updateHero(hero, updatedHero)"
-          @deleted="deleteHero(hero)"
+          @deleted="() => deleteHero(hero)"
         >
         </HeroEditor>
       </div>
@@ -56,15 +62,14 @@
       <Separator></Separator>
     </div>
     <h1>Units</h1>
-    <!-- <div class="separator">
-      <Separator></Separator>
-    </div> -->
     <div class="hero-block" v-for="unit in force?.units" :key="unit.name">
-      <UnitView :unit="unit" />
+      <UnitView :unit="unit" :is-editing="false" />
       <UnitEditor
         :unit="unit"
+        :force="force"
         @changed="(updatedUnit) => updateUnit(unit, updatedUnit)"
-        @deleted="deleteUnit(unit)"
+        @deleted="() => deleteUnit(unit)"
+        @duplicated="() => duplicateUnit(unit)"
       >
       </UnitEditor>
     </div>
@@ -100,6 +105,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { loadForces, saveForces } from '@/models/Forces'
 import ThemePicker from './ThemePicker.vue'
 import { applyTheme, ITheme } from '@/models/Themes'
+import ForceBlock from './ForceBlock.vue'
+import ContingentDistribution from './ContingentDistribution.vue'
 
 const props = defineProps({
   forceProp: Force,
@@ -188,6 +195,13 @@ function deleteUnit(unit: Unit) {
   force.value.units.splice(index, 1)
 }
 
+function duplicateUnit(unit: Unit) {
+  force.value.units.push(Unit.fromApi(unit.toApi()))
+  setTimeout(() => {
+    window.scrollTo(0, document.body.scrollHeight)
+  }, 100)
+}
+
 function onScroll(e) {
   isHeaderBackgroundVisible.value = e.target.scrollTop > 1
   headerBackgroundOpacity.value = e.target.scrollTop
@@ -249,13 +263,6 @@ main {
     left: 0;
     z-index: 1;
     border-bottom: 2px solid #4e412a;
-  }
-
-  .well {
-    position: fixed;
-    top: 6rem;
-    width: calc(100% - 7.6rem);
-    z-index: 1;
   }
 
   > h1 {

@@ -74,8 +74,33 @@
       </ul>
     </div>
   </div>
+  <div class="form-row" v-if="force.useContingents">
+    <div class="label">Contingent:</div>
+    <div class="field">
+      <contingent-selector
+        :name="unit.name"
+        :qty="unit.qty"
+        :contingent="contingent"
+        @changed="onContingentChanged"
+      ></contingent-selector>
+      <!-- <multiselect
+        type="text"
+        v-model="contingent"
+        :options="contingentOptions"
+        :allow-empty="false"
+        :show-labels="false"
+      /> -->
+    </div>
+  </div>
   <div class="form-row">
-    <div class="actions"><button class="danger" @click="deleted">Delete</button></div>
+    <div class="actions">
+      <button class="default" @click="duplicated">Duplicate</button>&nbsp;<button
+        class="danger"
+        @click="deleted"
+      >
+        Delete
+      </button>
+    </div>
   </div>
 </template>
 
@@ -86,18 +111,23 @@ import UnitTrait, { getUnitTraits } from '@/models/UnitTrait'
 import { computed, onMounted, ref, Ref, watch } from 'vue'
 import UnitProfile, { IUnitOption } from '@/models/UnitProfile'
 import UnitProfiles from '@/models/UnitProfiles'
+import Force from '@/models/Force'
+import ContingentSelector from './ContingentSelector.vue'
+import { IContingentAllocation } from '@/models/Contingent'
 
 const props = defineProps({
   unit: Unit,
+  force: Force,
 })
 
-const emit = defineEmits(['changed', 'deleted'])
+const emit = defineEmits(['changed', 'deleted', 'duplicated'])
 
 const name = ref('')
 const qty = ref(1)
 const profile: Ref<UnitProfile> = ref(UnitProfiles.WarriorsHeavyInfantry)
 const traits: Ref<UnitTrait[]> = ref([])
 const options: Ref<Array<IUnitOption>> = ref(null)
+const contingent: Ref<Array<IContingentAllocation>> = ref([])
 
 const availableTraits = computed(() => {
   const allTraits = getUnitTraits()
@@ -113,14 +143,26 @@ function updateRefs() {
   profile.value = props.unit.profile
   traits.value = props.unit.traits
   options.value = props.unit.options
+  contingent.value = props.unit.contingent || []
 }
 
 function deleted() {
   emit('deleted')
 }
 
+function duplicated() {
+  emit('duplicated')
+}
+
 const updatedUnit = computed(() => {
-  return new Unit(name.value, qty.value, profile.value, traits.value, options.value)
+  return new Unit(
+    name.value,
+    qty.value,
+    profile.value,
+    traits.value,
+    options.value,
+    contingent.value,
+  )
 })
 
 function changed() {
@@ -144,6 +186,10 @@ function onOptionClicked(id: number) {
   }
 }
 
+function onContingentChanged(change: Array<IContingentAllocation>) {
+  console.log(change)
+}
+
 watch(
   () => props.unit,
   () => {
@@ -165,6 +211,12 @@ watch(
 )
 watch(
   () => options.value,
+  () => {
+    changed()
+  },
+)
+watch(
+  () => contingent.value,
   () => {
     changed()
   },

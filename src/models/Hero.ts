@@ -13,6 +13,7 @@ export interface IHeroApi {
   missileType?: IMissileType
   armourModifier?: number
   spells?: Array<string>
+  contingent: string | null
 }
 
 export default class Hero implements IForceItem {
@@ -23,6 +24,7 @@ export default class Hero implements IForceItem {
     public missileType?: IMissileType,
     public armourModifier?: number,
     public spells?: Array<Spell>,
+    public contingent: string | null = null,
   ) {}
   validate(): void {
     throw new Error('Method not implemented.')
@@ -36,6 +38,7 @@ export default class Hero implements IForceItem {
       missileType: this.missileType,
       armourModifier: this.armourModifier,
       spells: this.spells?.map((spell) => spell.name),
+      contingent: this.contingent,
     }
   }
 
@@ -52,6 +55,7 @@ export default class Hero implements IForceItem {
       data.spells?.map(
         (spell) => Object.entries(Spells).find((s) => s[1].name === spell)?.[1] as Spell,
       ),
+      data.contingent,
     )
   }
 
@@ -158,5 +162,20 @@ export default class Hero implements IForceItem {
       errors.push('Heroes can only have spells if they have the Sorcery Trait')
     }
     return errors
+  }
+
+  get contingentFormatted() {
+    switch (this.contingent) {
+      case '1':
+        return 'I'
+      case '2':
+        return 'II'
+      case '3':
+        return 'III'
+      case '4':
+        return 'IV'
+      default:
+        return this.contingent
+    }
   }
 }

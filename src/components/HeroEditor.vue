@@ -118,6 +118,24 @@
       >
     </div>
   </div>
+  <div class="form-row" v-if="force.useContingents">
+    <div class="label">Contingent:</div>
+    <div class="field">
+      <contingent-selector
+        :name="hero.name"
+        :contingent="contingentAllocation"
+        :is-hero-unit="true"
+        @changed="onContingentChanged"
+      ></contingent-selector>
+      <!-- <multiselect
+        type="text"
+        v-model="contingent"
+        :options="contingentOptions"
+        :allow-empty="false"
+        :show-labels="false"
+      /> -->
+    </div>
+  </div>
   <div class="form-row">
     <div class="actions"><button class="danger" @click="deleted">Delete</button></div>
   </div>
@@ -132,9 +150,13 @@ import { IMissileType } from '@/models/Missiles'
 import { computed, onMounted, ref, Ref, watch } from 'vue'
 import { HeroMissileTypes } from '@/models/Missiles'
 import Spell, { Spells } from '@/models/Spell'
+import Force from '@/models/Force'
+import ContingentSelector from './ContingentSelector.vue'
+import { IContingentAllocation } from '@/models/Contingent'
 
 const props = defineProps({
   hero: Hero,
+  force: Force,
 })
 
 const emit = defineEmits(['changed', 'deleted'])
@@ -146,10 +168,15 @@ const spells: Ref<Spell[]> = ref([])
 const missileType: Ref<IMissileType> = ref(null)
 const armourModifierDecrease = ref(false)
 const armourModifierIncrease = ref(false)
+const contingent: Ref<string | null> = ref(null)
 
 const heroTraits = computed(() => {
   return getHeroTraits()
 })
+
+const contingentAllocation = computed<Array<IContingentAllocation>>(() => [
+  { qty: 1, value: contingent.value },
+])
 
 function updateRefs() {
   name.value = props.hero.name
@@ -159,6 +186,7 @@ function updateRefs() {
   missileType.value = props.hero.missileType
   armourModifierDecrease.value = props.hero.armourModifierDecrease
   armourModifierIncrease.value = props.hero.armourModifierIncrease
+  contingent.value = props.hero.contingent
 }
 
 function deleted() {
@@ -173,6 +201,7 @@ const updatedHero = computed(() => {
     missileType.value,
     armourModifierDecrease.value ? -1 : armourModifierIncrease.value ? 1 : 0,
     spells.value,
+    contingent.value,
   )
 })
 
@@ -184,6 +213,11 @@ function onKeyPressed(event: KeyboardEvent) {
   if (event.key === 'Enter') {
     changed()
   }
+}
+
+function onContingentChanged(change: Array<IContingentAllocation>) {
+  if (change.length > 1) throw Error('There should only be one contingent.')
+  contingent.value = change.length === 0 ? null : change[0].value
 }
 
 watch(
@@ -235,6 +269,12 @@ watch(
     if (val && armourModifierDecrease.value) {
       armourModifierDecrease.value = false
     }
+    changed()
+  },
+)
+watch(
+  () => contingent.value,
+  () => {
     changed()
   },
 )

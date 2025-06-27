@@ -1,39 +1,56 @@
 <template>
   <div class="force-view" ref="container">
-    <div class="well">
-      <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
-        {{ force.name }}
-      </h1>
-      <div class="columns">
-        <div class="column-left">
-          <h2>Total Points {{ force.points }}</h2>
-          <b>Hero Points {{ force.heroesPoints }}</b>
-          <b>Unit Points {{ force.unitsPoints }}</b>
-          <b>Reputation {{ force.reputation }}</b>
-          <b>Reputation Tokens {{ force.reputationTokens }}</b>
-        </div>
-        <div class="column-right">
-          <div class="actions" v-if="showActions">
-            <button @click="editForce">Edit</button>
-            <button @click="printForce">Print</button>
-            <button @click="duplicateForce">Copy</button>
-            <button @click="deleteForce" class="danger">Delete</button>
+    <div class="well-container">
+      <div class="well-bg"></div>
+      <div class="well">
+        <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+          {{ force.name }}
+        </h1>
+        <div class="columns">
+          <div class="column-left">
+            <h2>Total Points {{ force.points }}</h2>
+            <b>Hero Points {{ force.heroesPoints }}</b>
+            <b>Unit Points {{ force.unitsPoints }}</b>
+            <b>Reputation {{ force.reputation }}</b>
+            <b>Reputation Tokens {{ force.reputationTokens }}</b>
+          </div>
+          <div class="column-right">
+            <div v-if="force.useContingents" class="badge">Using contingents</div>
+            <div class="actions" v-if="showActions">
+              <button @click="editForce">Edit</button>
+              <button @click="printForce">Print</button>
+              <button @click="duplicateForce">Copy</button>
+              <button @click="deleteForce" class="danger">Delete</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="heroes">
-      <div class="hero-block" v-for="(hero, i) in force?.heroes" :key="hero.name">
-        <h2 v-if="i === 0">Heroes</h2>
-        <HeroView :hero="hero" />
-      </div>
+    <div v-if="force?.useContingents">
+      <template v-for="contingent in force.contingents" :key="contingent">
+        <h2>Contingent {{ contingent.name }}</h2>
+        <div class="hero-block" v-for="hero in contingent.heroes" :key="hero.name">
+          <HeroView :hero="hero" :is-editing="false" />
+        </div>
+        <div class="unit-block" v-for="unit in contingent.units" :key="unit.name">
+          <UnitView :unit="unit" :is-editing="false" />
+        </div>
+      </template>
     </div>
-    <div class="units">
-      <div class="unit-block" v-for="(unit, i) in force?.units" :key="unit.name">
-        <h2 v-if="i === 0">Units</h2>
-        <UnitView :unit="unit" />
+    <template v-else>
+      <div class="heroes">
+        <div class="hero-block" v-for="(hero, i) in force?.heroes" :key="hero.name">
+          <h2 v-if="i === 0">Heroes</h2>
+          <HeroView :hero="hero" :is-editing="false" />
+        </div>
       </div>
-    </div>
+      <div class="units">
+        <div class="unit-block" v-for="(unit, i) in force?.units" :key="unit.name">
+          <h2 v-if="i === 0">Units</h2>
+          <UnitView :unit="unit" :is-editing="false" />
+        </div>
+      </div>
+    </template>
   </div>
   <div class="veil" v-if="isPromptForConfirmationModalVisible"></div>
   <div class="modal" v-if="isPromptForConfirmationModalVisible">
@@ -120,9 +137,45 @@ onMounted(() => {
   flex-direction: column;
   margin: 1rem 2rem;
 
-  .well {
-    margin-bottom: 1.6rem;
+  .well-container {
     position: relative;
+    margin-bottom: 1.6rem;
+  }
+
+  .well-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      60deg,
+      var(--color-brown-lighter),
+      calc(100% - 50px),
+      transparent,
+      calc(100% - 50px),
+      transparent
+    );
+  }
+
+  .well {
+    position: relative;
+    position: relative;
+    /* background-image: url(/frame/Midgard-frame.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain; */
+
+    background-image: url(/frames/right.png), url(/frames/left.png), url(/frames/center.png);
+    background-position:
+      right,
+      left,
+      left center;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-size:
+      contain,
+      contain,
+      calc(100% - 50px) 100%;
   }
 
   > h1 {
@@ -186,6 +239,7 @@ onMounted(() => {
     }
   }
 
+  .contingent-block,
   .hero-block,
   .unit-block {
     break-inside: avoid;

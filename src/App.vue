@@ -42,6 +42,7 @@
 html {
   font-size: 62.5%;
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 3) {
@@ -101,7 +102,7 @@ body {
 }
 
 a {
-  font-family: var(--font-base);
+  font-family: var(--base-font);
   color: var(--color-links);
   font-weight: bold;
   font-size: 1.2em;
@@ -123,6 +124,17 @@ input {
 }
 input[type='text'] {
   width: 100%;
+}
+
+label.checkbox {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-form);
+  input[type='checkbox'] {
+  }
+  span {
+    margin-left: 0.6rem;
+  }
 }
 
 button {
@@ -168,16 +180,9 @@ h6 {
   h2 {
     margin: 0;
   }
-  box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.3);
-  background-color: var(--color-brown-light);
-  background: linear-gradient(
-    to top left,
-    var(--color-brown-light),
-    95%,
-    var(--color-brown-super-light)
-  );
+  // box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.3);
+  // background-color: var(--color-brown-light);
   padding: 1.2rem 1.6rem;
-  border: 2px solid #4e412a;
   border-radius: 0.6rem;
 
   .columns {
@@ -194,6 +199,7 @@ h6 {
       align-items: flex-end;
       justify-content: flex-end;
       gap: 1rem;
+      margin-right: 7.5rem;
     }
   }
 
@@ -422,6 +428,7 @@ table {
     justify-content: flex-end;
   }
 }
+
 header {
   position: fixed;
   top: 0;
@@ -429,6 +436,7 @@ header {
   left: 0;
   z-index: 1;
 }
+
 .nav-bar {
   background-color: var(--color-grey-darker);
   box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.3);
@@ -471,7 +479,31 @@ header {
   }
 }
 
+.force-item-table-container {
+  position: relative;
+
+  .contingent {
+    position: absolute;
+    background-color: #fff;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3rem;
+    border: solid #221f20 2px;
+    top: -1rem;
+    left: -1rem;
+    font-weight: 700;
+    box-shadow: 2px 2px 8px #00000033;
+  }
+}
+
 @media print {
+  #__vue-devtools-container__ {
+    display: none;
+  }
+
   body {
     margin-top: 0;
     background-color: #fff;
