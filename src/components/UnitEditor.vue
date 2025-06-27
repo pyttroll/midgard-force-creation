@@ -187,7 +187,7 @@ function onOptionClicked(id: number) {
 }
 
 function onContingentChanged(change: Array<IContingentAllocation>) {
-  console.log(change)
+  contingent.value = change
 }
 
 watch(

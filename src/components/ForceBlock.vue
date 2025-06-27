@@ -23,7 +23,7 @@ withDefaults(defineProps<IProps>(), { isFixed: false })
   &.fixed {
     position: fixed;
     top: 6rem;
-    width: calc(100% - 7.6rem);
+    width: calc(100% - 4rem);
     z-index: 1;
   }
 }

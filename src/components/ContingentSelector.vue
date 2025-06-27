@@ -57,14 +57,23 @@ function onContingentQuantityChange(inputValue: string, contingentOption: string
 }
 
 function onContingentChange(isChecked: boolean, contingentOption: string) {
-  if (props.isHeroUnit) {
+  if (props.isHeroUnit || props.qty === 1) {
     contingentInternal.value = [{ value: contingentOption, qty: 1 }]
   } else {
     if (isChecked) {
-      contingentInternal.value.push({
-        value: contingentOption,
-        qty: Math.max(1, props.qty - contingentInternal.value.reduce((sum, x) => sum + x.qty, 0)),
-      })
+      const qty = Math.max(
+        1,
+        props.qty - contingentInternal.value.reduce((sum, x) => sum + x.qty, 0),
+      )
+      const existing = contingentInternal.value.find((c) => c.value === contingentOption)
+      if (existing) {
+        existing.qty = qty
+      } else {
+        contingentInternal.value.push({
+          value: contingentOption,
+          qty,
+        })
+      }
     } else {
       contingentInternal.value = contingentInternal.value.filter(
         (x) => x.value !== contingentOption,
@@ -107,7 +116,7 @@ watch(
 )
 
 onMounted(() => {
-  contingentInternal.value = props.contingent || []
+  contingentInternal.value = props.contingent ? [...props.contingent] : []
 })
 </script>
 

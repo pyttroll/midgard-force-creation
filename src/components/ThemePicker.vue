@@ -46,8 +46,8 @@ function selectTheme(theme: ITheme) {
       border: solid 2px #444;
       box-shadow: 0 0 0.3rem #0006;
       border-radius: 100%;
-      width: 3rem;
-      height: 3rem;
+      width: 2rem;
+      height: 2rem;
     }
 
     .theme-color-hover {

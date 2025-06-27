@@ -18,10 +18,6 @@
           <b>Reputation Tokens {{ force.reputationTokens }}</b>
         </div>
         <div class="column-right">
-          <contingent-distribution
-            v-if="force.useContingents"
-            :force="force"
-          ></contingent-distribution>
           <label class="checkbox"
             ><input type="checkbox" v-model="force.useContingents" />
             <span>Use contingents</span></label
@@ -34,7 +30,30 @@
         </div>
       </div>
     </force-block>
-    <div class="hero-block force-name-block">
+    <div
+      v-if="force.useContingents"
+      style="
+        z-index: 100;
+        position: fixed;
+        top: 24rem;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        border-top: solid 1px var(--color-brown-dark);
+        border-bottom: solid 1px var(--color-brown-dark);
+        background-color: var(--color-brown-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 0.3rem #0006;
+      "
+    >
+      <!-- <h2>Contingents point allocation</h2> -->
+      <contingent-distribution :force="force"></contingent-distribution>
+    </div>
+
+    <div class="hero-block force-name-block" :class="{ 'use-contingents': force.useContingents }">
       <div class="form-row">
         <div class="label">Force Name:</div>
         <div class="field"><input type="text" v-model="force.name" /></div>
@@ -274,6 +293,10 @@ main {
 
 .force-name-block {
   margin-top: 19rem;
+
+  &.use-contingents {
+    margin-top: 28rem;
+  }
 }
 
 .hero-block {
@@ -291,6 +314,7 @@ main {
 }
 
 .validation-errors {
+  z-index: 1000;
   background-color: #f00;
   border: solid 2px #fff;
   color: #fff;

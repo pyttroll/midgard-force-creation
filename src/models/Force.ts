@@ -202,7 +202,7 @@ export default class Force {
     if (this.useContingents) {
       // Each hero and unit must be assigned to a contingent.
       if (this.heroes.some((x) => x.contingent == null)) {
-        errors.push('Every Unit and Hero in your Force must be allocated to a Contingent')
+        errors.push('Every Unit and Hero in your Force must be assigned to a Contingent')
       }
 
       // Each contingent must have a hero.

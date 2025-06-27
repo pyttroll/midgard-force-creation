@@ -198,7 +198,7 @@ h6 {
       flex-grow: 1;
       align-items: flex-end;
       justify-content: flex-end;
-      gap: 1rem;
+      gap: 0.8rem;
       margin-right: 7.5rem;
     }
   }
@@ -252,6 +252,14 @@ table {
         &:first-of-type {
           text-align: left;
         }
+      }
+
+      th {
+        border-bottom: solid 1px var(--color-dark);
+        border-right: solid 1px var(--color-dark);
+        padding: 0.6rem 1.2rem;
+        background-color: var(--color-brown-super-light);
+        text-align: center;
       }
 
       &.spell,

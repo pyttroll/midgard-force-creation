@@ -15,7 +15,7 @@
             <b>Reputation Tokens {{ force.reputationTokens }}</b>
           </div>
           <div class="column-right">
-            <div v-if="force.useContingents" class="badge">Using contingents</div>
+            <div v-if="force.useContingents" class="badge">Contingents enabled</div>
             <div class="actions" v-if="showActions">
               <button @click="editForce">Edit</button>
               <button @click="printForce">Print</button>
@@ -176,6 +176,14 @@ onMounted(() => {
       contain,
       contain,
       calc(100% - 50px) 100%;
+
+    .badge {
+      margin-bottom: 1rem;
+      background-color: var(--color-brown-medium);
+      color: var(--color-brown-extra-light);
+      font-weight: bold;
+      padding: 0.4rem 1rem;
+    }
   }
 
   > h1 {
