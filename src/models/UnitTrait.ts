@@ -52,7 +52,7 @@ export const UnitTraits: Record<string, UnitTrait> = {
   Aloof: UnitTrait.fromObject({
     name: 'Aloof',
     description:
-      'Cannot be influenced by friendly Unites (unless attached to the Unit with the  Artillerist or Beast Master trait, as appropriate) [pg67]',
+      'Cannot be influenced by friendly units (unless attached to the Unit with the  Artillerist or Beast Master trait, as appropriate) [pg67]',
   }),
   Amphibious: UnitTrait.fromObject({
     name: 'Amphibious',
@@ -165,7 +165,7 @@ export const UnitTraits: Record<string, UnitTrait> = {
   Stampede: UnitTrait.fromObject({
     name: 'Stampede',
     description:
-      'If reduced to 1 Stamina, retreats and fails Command Test for breaking, will stampede.  Move 2 ST directly to rear.  Units in path must roll Command Test on 2d6, choosing lowest, and lose a point of Stamina if failed.  Unites in path must roll 2d6 for Risk to Unites and choose lowest dice. Stampeding Unit is then removed [pg70]',
+      'If reduced to 1 Stamina, retreats and fails Command Test for breaking, will stampede.  Move 2 ST directly to rear.  Units in path must roll Command Test on 2d6, choosing lowest, and lose a point of Stamina if failed. Units in path must roll 2d6 for Risk to Units and choose lowest dice. Stampeding Unit is then removed [pg70]',
   }),
   Steadfast: UnitTrait.fromObject({
     name: 'Steadfast',
