@@ -33,7 +33,11 @@
           <HeroView :hero="hero" :is-editing="false" />
         </div>
         <div class="unit-block" v-for="unit in contingent.units" :key="unit.name">
-          <UnitView :unit="unit" :is-editing="false" />
+          <UnitView
+            :unit="unit"
+            :is-editing="false"
+            :qty="unit.contingent.find((u) => u.value === contingent.name).qty"
+          />
         </div>
       </template>
     </div>

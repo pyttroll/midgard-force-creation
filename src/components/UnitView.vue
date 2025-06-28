@@ -20,7 +20,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ unit.qty }}</td>
+          <td>{{ qty || unit.qty }}</td>
           <td>{{ unit.profile.type }} ({{ unit.profile.name }})</td>
           <td>{{ unit.points }}</td>
           <td>{{ unit.combatDice }}</td>
@@ -53,8 +53,11 @@
 <script setup lang="ts">
 import Unit from '@/models/Unit'
 
-defineProps({
-  unit: Unit,
-  isEditing: Boolean,
-})
+interface IProps {
+  unit: Unit
+  isEditing: boolean
+  qty?: number
+}
+
+defineProps<IProps>()
 </script>
