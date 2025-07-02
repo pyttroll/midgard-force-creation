@@ -104,13 +104,13 @@
 
 <script setup lang="ts">
 import SeparatorBar from '@/components/SeparatorBar.vue'
-import { loadForces, saveForces } from '@/models/Forces'
+import { useForcesStore } from '@/stores/forces'
 import HeroTrait from '@/models/HeroTrait'
 import UnitTrait from '@/models/UnitTrait'
-import { onMounted, Ref, ref } from 'vue'
+import { ref } from 'vue'
 
-const customHeroTraits: Ref<Array<HeroTrait>> = ref([])
-const customUnitTraits: Ref<Array<UnitTrait>> = ref([])
+const forcesStore = useForcesStore()
+const { customHeroTraits, customUnitTraits } = forcesStore
 const customHeroTraitName = ref('')
 const customHeroTraitPointCost = ref()
 const customHeroTraitDescription = ref('')
@@ -118,19 +118,14 @@ const customUnitTraitName = ref('')
 const customUnitTraitPointCost = ref()
 const customUnitTraitDescription = ref('')
 
-onMounted(() => {
-  const { customHeroTraits: heroTraits, customUnitTraits: unitTraits } = loadForces()
-  customHeroTraits.value = heroTraits
-  customUnitTraits.value = unitTraits
-})
+// No need for onMounted - store automatically loads data
 
 function backupForces() {
-  const { forces, customHeroTraits, customUnitTraits } = loadForces()
   const json = JSON.stringify(
     {
-      forces: forces.map((x) => x.toApi()),
-      customHeroTraits: customHeroTraits.map((x) => x.toApi()),
-      customUnitTraits: customUnitTraits.map((x) => x.toApi()),
+      forces: forcesStore.forces.map((x) => x.toApi()),
+      customHeroTraits: forcesStore.customHeroTraits.map((x) => x.toApi()),
+      customUnitTraits: forcesStore.customUnitTraits.map((x) => x.toApi()),
     },
     null,
     2,
@@ -148,74 +143,50 @@ function importData() {
   const reader = new FileReader()
   reader.onload = () => {
     const json = reader.result as string
-    // const forces = JSON.parse(json).map((x) => Force.fromApi(x))
     localStorage.setItem('forces', json)
+    forcesStore.loadFromStorage() // Reload store data
     alert('Data imported')
   }
   reader.readAsText(file)
 }
 
 function addCustomHeroTrait() {
-  customHeroTraits.value.push(
-    HeroTrait.fromObject({
-      name: customHeroTraitName.value,
-      pointCost: customHeroTraitPointCost.value,
-      description: customHeroTraitDescription.value,
-      isRareAndPowerful: false,
-      isCustom: true,
-    }),
-  )
-  const { forces } = loadForces()
-  saveForces({
-    forces,
-    customHeroTraits: customHeroTraits.value,
-    customUnitTraits: customUnitTraits.value,
+  const trait = HeroTrait.fromObject({
+    name: customHeroTraitName.value,
+    pointCost: customHeroTraitPointCost.value,
+    description: customHeroTraitDescription.value,
+    isRareAndPowerful: false,
+    isCustom: true,
   })
+  
+  forcesStore.addCustomHeroTrait(trait)
+  
   customHeroTraitName.value = ''
   customHeroTraitPointCost.value = null
   customHeroTraitDescription.value = ''
 }
 
 function deleteCustomHeroTrait(trait: HeroTrait) {
-  const index = customHeroTraits.value.indexOf(trait)
-  customHeroTraits.value.splice(index, 1)
-  const { forces } = loadForces()
-  saveForces({
-    forces,
-    customHeroTraits: customHeroTraits.value,
-    customUnitTraits: customUnitTraits.value,
-  })
+  forcesStore.removeCustomHeroTrait(trait.name)
 }
 
 function addCustomUnitTrait() {
-  customUnitTraits.value.push(
-    UnitTrait.fromObject({
-      name: customUnitTraitName.value,
-      pointCost: [customUnitTraitPointCost.value],
-      description: customUnitTraitDescription.value,
-      isCustom: true,
-    }),
-  )
-  const { forces } = loadForces()
-  saveForces({
-    forces,
-    customHeroTraits: customHeroTraits.value,
-    customUnitTraits: customUnitTraits.value,
+  const trait = UnitTrait.fromObject({
+    name: customUnitTraitName.value,
+    pointCost: [customUnitTraitPointCost.value],
+    description: customUnitTraitDescription.value,
+    isCustom: true,
   })
+  
+  forcesStore.addCustomUnitTrait(trait)
+  
   customUnitTraitName.value = ''
   customUnitTraitPointCost.value = null
   customUnitTraitDescription.value = ''
 }
 
 function deleteCustomUnitTrait(trait: UnitTrait) {
-  const index = customUnitTraits.value.indexOf(trait)
-  customUnitTraits.value.splice(index, 1)
-  const { forces } = loadForces()
-  saveForces({
-    forces,
-    customHeroTraits: customHeroTraits.value,
-    customUnitTraits: customUnitTraits.value,
-  })
+  forcesStore.removeCustomUnitTrait(trait.name)
 }
 </script>
 
