@@ -254,7 +254,7 @@ export function getHeroTraits(): HeroTrait[] {
   if (localStorage.getItem('forces')) {
     const traits = JSON.parse(localStorage.getItem('forces')).customHeroTraits
     if (traits) {
-      customHeroTraits = traits.map((trait) => HeroTrait.fromObject(trait))
+      customHeroTraits = traits.map((trait: any) => HeroTrait.fromObject(trait))
     }
   }
   const traits = Object.values(HeroTraits)

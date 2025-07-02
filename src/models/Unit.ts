@@ -29,15 +29,23 @@ export default class Unit implements IForceItem {
     options = options.filter((x) => x != null)
   }
   get contingentFormatted(): string {
-    throw new Error('Method not implemented.')
+    if (!this.contingent || this.contingent.length === 0) {
+      return ''
+    }
+    return this.contingent
+      .map((allocation) => `${allocation.value}:${allocation.qty}`)
+      .join(', ')
   }
 
   validate(): void {
-    throw new Error('Method not implemented.')
+    const errors = this.validationErrors
+    if (errors.length > 0) {
+      throw new Error(`Unit validation failed: ${errors.join(', ')}`)
+    }
   }
 
-  get missiles(): IMissileType {
-    throw new Error('Method not implemented.')
+  get missiles(): IMissileType | null {
+    return this.missileType || null
   }
 
   toApi(): IUnitApi {
@@ -163,8 +171,8 @@ export default class Unit implements IForceItem {
     return this.options.filter((x) => x != null).reduce((acc, option) => acc + option.points, 0)
   }
 
-  get validationErrors() {
-    const errors = []
+  get validationErrors(): string[] {
+    const errors: string[] = []
     // Check for traits removed by other traits or unit options.
     return errors
   }

@@ -15,7 +15,7 @@
     "useDefineForClassFields": true,
     //    "sourceMap": true,
     "baseUrl": ".",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictNullChecks": false,
     "outDir": "dist",
     "paths": {

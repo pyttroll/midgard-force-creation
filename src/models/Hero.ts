@@ -27,7 +27,10 @@ export default class Hero implements IForceItem {
     public contingent: string | null = null,
   ) {}
   validate(): void {
-    throw new Error('Method not implemented.')
+    const errors = this.validationErrors
+    if (errors.length > 0) {
+      throw new Error(`Hero validation failed: ${errors.join(', ')}`)
+    }
   }
 
   toApi(): IHeroApi {

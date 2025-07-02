@@ -17,9 +17,9 @@ export function loadForces() {
   } else {
     const apiForces = JSON.parse(forcesJSON)
     try {
-      forces = apiForces.forces.map((force) => Force.fromApi(force))
-      customHeroTraits = apiForces.customHeroTraits.map((trait) => HeroTrait.fromObject(trait))
-      customUnitTraits = apiForces.customUnitTraits.map((trait) => UnitTrait.fromObject(trait))
+      forces = apiForces.forces.map((force: any) => Force.fromApi(force))
+      customHeroTraits = apiForces.customHeroTraits.map((trait: any) => HeroTrait.fromObject(trait))
+      customUnitTraits = apiForces.customUnitTraits.map((trait: any) => UnitTrait.fromObject(trait))
     } catch (e) {
       console.log(e)
 
@@ -34,10 +34,14 @@ export function loadForces() {
   return { forces, customHeroTraits, customUnitTraits }
 }
 
-export function saveForces({ forces, customHeroTraits, customUnitTraits }) {
+export function saveForces({ forces, customHeroTraits, customUnitTraits }: { 
+  forces: Force[], 
+  customHeroTraits: HeroTrait[], 
+  customUnitTraits: UnitTrait[] 
+}) {
   let apiForces
   try {
-    apiForces = forces.map((force) => force.toApi())
+    apiForces = forces.map((force: Force) => force.toApi())
   } catch (e) {
     console.error('Failed to convert forces to API models')
     throw e
@@ -45,7 +49,7 @@ export function saveForces({ forces, customHeroTraits, customUnitTraits }) {
 
   let apiCustomHeroTraits
   try {
-    apiCustomHeroTraits = customHeroTraits.map((trait) => trait.toApi())
+    apiCustomHeroTraits = customHeroTraits.map((trait: HeroTrait) => trait.toApi())
   } catch (e) {
     console.error('Failed to convert custom hero traits to API models')
     throw e
@@ -53,7 +57,7 @@ export function saveForces({ forces, customHeroTraits, customUnitTraits }) {
 
   let apiCustomUnitTraits
   try {
-    apiCustomUnitTraits = customUnitTraits.map((trait) => trait.toApi())
+    apiCustomUnitTraits = customUnitTraits.map((trait: UnitTrait) => trait.toApi())
   } catch (e) {
     console.error('Failed to convert custom unit traits to API models')
     throw e

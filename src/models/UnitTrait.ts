@@ -189,7 +189,7 @@ export function getUnitTraits(): UnitTrait[] {
   if (localStorage.getItem('forces')) {
     const traits = JSON.parse(localStorage.getItem('forces')).customUnitTraits
     if (traits) {
-      customUnitTraits = traits.map((trait) => UnitTrait.fromObject(trait))
+      customUnitTraits = traits.map((trait: any) => UnitTrait.fromObject(trait))
     }
   }
   const traits = Object.values(UnitTraits)
