@@ -221,9 +221,11 @@ function duplicateUnit(unit: Unit) {
   }, 100)
 }
 
-function onScroll(e) {
-  isHeaderBackgroundVisible.value = e.target.scrollTop > 1
-  headerBackgroundOpacity.value = e.target.scrollTop
+function onScroll(e: Event | { target: { scrollTop: number } }) {
+  const target = e.target as HTMLElement | { scrollTop: number }
+  const scrollTop = 'scrollTop' in target ? target.scrollTop : 0
+  isHeaderBackgroundVisible.value = scrollTop > 1
+  headerBackgroundOpacity.value = scrollTop
 }
 
 function updateForce() {
