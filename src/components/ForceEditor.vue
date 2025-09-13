@@ -63,7 +63,7 @@
     <div class="separator">
       <Separator></Separator>
     </div>
-    <h1>Heroes</h1>
+    <h1 class="section-title">Heroes</h1>
     <div v-for="hero in force?.heroes" :key="hero.name">
       <div class="hero-block">
         <HeroView :hero="hero" :is-editing="true" />
@@ -286,7 +286,7 @@ main {
     border-bottom: 2px solid #4e412a;
   }
 
-  > h1 {
+  .section-title {
     text-align: center;
     font-size: 2.5em;
     margin-bottom: 4rem;
