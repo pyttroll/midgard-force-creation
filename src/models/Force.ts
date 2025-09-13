@@ -219,8 +219,11 @@ export default class Force {
         errors.push('Each contingent must have at least one unit.')
       }
 
-      // Each contingent must total at least 25% of the whole force.
-      if (!this.contingentPoints.map((x) => x.points).every((pts) => pts >= this.points / 4)) {
+      // If total contingents is 3 or less, each contingent must total at least 25% of the whole force.
+      if (
+        this.contingentPoints.length < 4 &&
+        !this.contingentPoints.map((x) => x.points).every((pts) => pts >= this.points / 4)
+      ) {
         errors.push(
           `Each Contingent must contain Units and Heroes totalling at least 25% of the Points value of the whole Force. (${this.contingentPoints.map((cp) => `${cp.name} = ${cp.points}pts`).join(', ')})`,
         )
