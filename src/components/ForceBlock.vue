@@ -64,7 +64,7 @@ withDefaults(defineProps<IProps>(), { isFixed: false })
     calc(100% - 50px) 100%;
 }
 
-> h1 {
+.well h1 {
   text-align: left;
   font-size: 1.4em;
   margin-top: 0.5rem;

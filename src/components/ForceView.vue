@@ -189,13 +189,6 @@ onMounted(() => {
       padding: 0.4rem 1rem;
     }
   }
-
-  > h1 {
-    text-align: left;
-    font-size: 1.4em;
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
 }
 
 .modal {
