@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<IProps>(), { qty: 1, isHeroUnit: false })
 const emit = defineEmits(['changed'])
 
 const contingentInternal: Ref<Array<IContingentAllocation>> = ref([])
-const contingentOptions = ref(['I', 'II', 'III', 'IV'])
+const contingentOptions = ref(['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'])
 
 function onContingentQuantityChange(inputValue: string, contingentOption: string) {
   const qty = parseInt(inputValue)
