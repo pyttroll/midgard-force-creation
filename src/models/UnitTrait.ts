@@ -160,7 +160,7 @@ export const UnitTraits: Record<string, UnitTrait> = {
   }),
   SpearsAsTribute: UnitTrait.fromObject({
     name: 'Spears as Tribute',
-    description: 'Add +2 Combat Dice until Unit loses any Stamina [pg70]',
+    description: 'Add +2 Combat Dice while at full Stamina [pg70]',
   }),
   Stampede: UnitTrait.fromObject({
     name: 'Stampede',

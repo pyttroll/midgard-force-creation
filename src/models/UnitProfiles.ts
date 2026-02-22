@@ -461,6 +461,12 @@ const UnitProfiles: Record<string, UnitProfile> = {
         points: 1,
         modifiers: { missileType: MissileTypes.ShortOrMountedBow },
       },
+      {
+        id: 4,
+        name: 'Reduce size from Towering to Big',
+        points: -2,
+        modifiers: { discards: [UnitTraits.Towering.name], adds: [UnitTraits.Big.name] },
+      },
     ],
     availableTraits: [
       { trait: UnitTraits.AuraOfDread, points: 12 },
